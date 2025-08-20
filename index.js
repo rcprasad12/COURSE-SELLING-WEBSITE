@@ -10,7 +10,32 @@ app.post("/user/signup" , function (req,res){
 })
 
 
+app.post("/user/signIn" , function (req,res){
+    res.json({
+        message : "signIn endoint"
+    })
+})
 
+
+
+app.get("/user/purchases" , function (req,res){
+    res.json({
+        message : "Purchases endpoint"
+    })
+})
+
+app.post("/course/purchase" , function (req,res){
+    res.json({
+        message : "Course purchase endoint"
+    })
+})
+
+
+app.get("/courses" , function (req,res){
+    res.json({
+        message : "All the courses endoint"
+    })
+})
 
 
 
