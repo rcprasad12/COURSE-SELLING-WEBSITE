@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const adminRoouter = Router();
+const adminRouter = Router();
 const { adminModel } = require("../db");
 
 
-adminRoouter.post("/signup" , function (req,res){
+adminRouter.post("/signup" , function (req,res){
     res.json({
         message : "signup endoint"
     })
