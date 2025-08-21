@@ -5,8 +5,8 @@ const { courseRouter } = require("./routes/course");
 const app = express();
 
 
-app.use("./user" , userRouter);
-app.use("/course" , userCourse);
+app.use("/api/vi/user" , userRouter);
+app.use("/api/v1/course" , courseRouter);
 
 
 
