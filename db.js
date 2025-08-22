@@ -1,7 +1,7 @@
 //Skeleton of database of mongo is represented
-
+require('dotenv').config();
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://Ramesh:u0akvQfq1cyeqpMW@cluster0.rphfeul.mongodb.net/coursera-app");
+
 const Schema   = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
