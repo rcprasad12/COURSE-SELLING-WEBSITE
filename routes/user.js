@@ -19,6 +19,7 @@ const userSchema = z.object({
 
 userRouter.post("/signup" , async function (req,res){
 
+    try {
     const { email , password , firstName , lastName } = userSchema.parse(req.body); //todo : Add Zod validation
 
     //todo : hash the password so plaintext pw is not stored in the db
@@ -35,9 +36,18 @@ userRouter.post("/signup" , async function (req,res){
 
 
     res.json({
-        message : "signup endoint"
+        message : "signup success"
     })
-})
+    }
+    catch(e){
+        console.error("Error during signup:", e);
+        res.status(400).json({
+            message : "Error during signup",
+            error: e.message
+        });
+    }
+
+});
 
 
 userRouter.post("/signIn" , function (req,res){
