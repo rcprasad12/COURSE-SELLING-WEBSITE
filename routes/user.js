@@ -24,7 +24,7 @@ userRouter.post("/signup" , async function (req,res){
     //todo : hash the password so plaintext pw is not stored in the db
     const hashedPassword = await bcrypt.hash(password,7);
 
-    const newUser = new user({
+    const newUser = new userModel({
         email , 
         password : hashedPassword , 
         firstName , 
