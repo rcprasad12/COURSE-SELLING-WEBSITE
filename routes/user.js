@@ -22,16 +22,16 @@ userRouter.post("/signup" , async function (req,res){
     const { email , password , firstName , lastName } = userSchema.parse(req.body); //todo : Add Zod validation
 
     //todo : hash the password so plaintext pw is not stored in the db
-    const hashedPassword = await bcrypt.hash(password,7);
+    const hashedPassword = await bcrypt.hash(password,10);
 
-    const newUser = new userModel({
-        email , 
-        password : hashedPassword , 
-        firstName , 
-        lastName 
+    await userModel.create({      // internally call the save()
+        email     : email         , 
+        password  : hashedPassword , 
+        firstName : firstName   , 
+        lastName  : lastName
     });
 
-    await newUser.save();
+    //await newUser.save();
 
 
     res.json({
