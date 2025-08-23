@@ -3,7 +3,7 @@
 
 const {Router } = require ("express");
 const userRouter = Router();
-const {userModel} = require("../db");
+const {userModel, purchaseModel} = require("../db");
 const { z }  = require("zod");
 const bcrypt = require("bcrypt");
 const jwt    = require("jsonwebtoken");
@@ -82,9 +82,16 @@ userRouter.post("/signIn" , async function (req,res){
 
 });
 
-userRouter.get("/purchases" , function (req,res){
+userRouter.get("/purchases" ,userMiddleware,async function (req,res){
+    const userId = req.userId ;
+
+   const purchases =  await purchaseModel.find({
+        userId : userId,
+        courseId: courseId 
+    })
+
     res.json({
-        message : "Purchases endpoint"
+        purchases
     })
 })
 
