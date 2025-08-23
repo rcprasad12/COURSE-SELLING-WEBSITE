@@ -6,6 +6,9 @@ const userRouter = Router();
 const {userModel} = require("../db");
 const { z }  = require("zod");
 const bcrypt = require("bcrypt");
+const jwt    = require("jsonwebtoken");
+const JWT_USER_PASSWORD = "aladld123" ;
+
 
 
 const userSchema = z.object({
@@ -50,11 +53,34 @@ userRouter.post("/signup" , async function (req,res){
 });
 
 
-userRouter.post("/signIn" , function (req,res){
-    res.json({
-        message : "signIn endoint"
+userRouter.post("/signIn" , async function (req,res){
+
+    const { email , password } = req.body ;
+
+    const user = await userModel.findOne({
+        email : email ,
+        password : password 
     })
-})
+
+    if(user){
+        const token = jwt.sign({
+            id : user._id,
+            email : user.email
+    },JWT_USER_PASSWORD);
+
+    //if needed Do cookie logic here 
+
+
+        res.json({
+            token : token 
+        })
+    }else{
+        res.status(403).json({
+            message : "Invalid credentials"
+        })
+    }
+
+});
 
 userRouter.get("/purchases" , function (req,res){
     res.json({

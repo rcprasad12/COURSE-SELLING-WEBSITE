@@ -1,20 +1,88 @@
 const { Router } = require("express");
 const adminRouter = Router();
+const jwt = require("jsonwebtoken");
 const { adminModel } = require("../db");
+const JWT_ADMIN_PASSWORD = "wibweibn234";
+const { z } = require("zod");
+const  bcrypt  = require("bcrypt");
+
+
+const userSchema = z.object({
+
+    email    : z.string().email(),
+    password : z.string().min(6) ,
+    firstName: z.string().min(1),
+    lastName : z.string().min(1)
+});
 
 //bcrypt , zod , jsonwebtoken 
-adminRouter.post("/signup" , function (req,res){
-    res.json({
-        message : "signup endoint"
-    })
-})
+adminRouter.post("/signup" , async function (req,res){
+
+    try {
+    const { email , password , firstName , lastName } = userSchema.parse(req.body); //todo : Add Zod validation
+
+    //todo : hash the password so plaintext pw is not stored in the db
+    const hashedPassword = await bcrypt.hash(password,10);
+
+    await adminModel.create({      // internally call the save()
+        email     : email         , 
+        password  : hashedPassword , 
+        firstName : firstName   , 
+        lastName  : lastName
+    });
+
+    //await newUser.save();
 
 
-adminRouter.post("/signIn" , function (req,res){
+
     res.json({
-        message : "signIn endoint"
+        message : "signup success"
     })
-})
+    }
+    catch(e){
+        console.error("Error during signup:", e);
+        res.status(400).json({
+            message : "Error during signup",
+            error: e.message
+        });
+    }
+});
+
+
+adminRouter.post("/signin" ,async function (req,res){
+
+    const { email , password } = req.body ;
+
+    const admin = await adminModel.findOne({
+        email : email ,
+        
+    })
+        // compare plain password with hashed password in DB
+    const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
+            return res.status(403).json({ message: "Invalid credentials" });
+        }
+
+    if(admin){
+        const token = jwt.sign({
+            id : admin._id,
+            email : admin.email
+    },JWT_ADMIN_PASSWORD);
+
+    //if needed Do cookie logic here 
+
+
+        res.json({
+            token : token 
+        })
+    }else{
+        res.status(403).json({
+            message : "Invalid credentials"
+        })
+    }
+
+
+});
 
 adminRouter.post("/course" , function (req,res){
     res.json({
@@ -26,16 +94,16 @@ adminRouter.put("/course" , function (req,res){
     res.json({
         message : "To ADD a course"
     })
-})
+});
 
 
 adminRouter.get("/course/bulk" , function(req,res){
     res.json({
         mesaage : "Sifnn endpoint"
     })
-})
+});
 
 
 module.exports = {
     adminRouter : adminRouter
-}
+};
