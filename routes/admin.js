@@ -89,7 +89,7 @@ adminRouter.post("/course" ,adminMiddleware,  async function (req,res){
 
     const adminId = req.userId ;
 
-    const { title , description , imageURL , price } = req.body ;
+    const { title , description , imageURL , price , courseId } = req.body ;
 
     const course =  await courseModel.create({
         title : title  , 
@@ -109,18 +109,40 @@ adminRouter.post("/course" ,adminMiddleware,  async function (req,res){
 
 adminRouter.put("/course" ,adminMiddleware , async function (req,res){
 
+        await courseModel.updateOne({
+            _id : courseId ,   //even if one admin is trying to get access of other admin curse details so in order to prevent it add adminID in it 
+            creatorId : adminId ,
+
+        },{
+            title : title  , 
+            description : description ,
+            imageURL : imageURL ,
+            price : price
+        })
 
 
     res.json({
-        message : "To ADD a course"
+        message : "Course updated" ,
+        courseId : course._id 
     })
 });
 
 
-adminRouter.get("/course/bulk" , function(req,res){
+adminRouter.get("/course/bulk",adminMiddleware , async function(req,res){
+
+        const adminID = req.userId ;
+       const courses =  await courseModel.find({
+
+            creatorId : adminId 
+
+        });
+
+
     res.json({
-        mesaage : "Sifnn endpoint"
+        message : "Course updated" ,
+        courses 
     })
+
 });
 
 
