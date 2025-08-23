@@ -3,7 +3,7 @@
 
 const {Router } = require ("express");
 const userRouter = Router();
-const {userModel, purchaseModel} = require("../db");
+const {userModel, purchaseModel, courseModel} = require("../db");
 const { z }  = require("zod");
 const bcrypt = require("bcrypt");
 const jwt    = require("jsonwebtoken");
@@ -94,8 +94,7 @@ userRouter.get("/purchases" ,userMiddleware,async function (req,res){
 
     let purchasesCourseIds = [];
 
-
-    for(int i = 0 ; i < purchases.length; i++){
+    for(let i = 0 ; i < purchases.length; i++){
         purchasesCourseIds.push(purchases[i].courseId);
     }
 
@@ -109,7 +108,7 @@ userRouter.get("/purchases" ,userMiddleware,async function (req,res){
         purchases , 
         courseData
     })
-})
+});
 
 module.exports = {
     userRouter : userRouter
