@@ -7,7 +7,7 @@ const {userModel} = require("../db");
 const { z }  = require("zod");
 const bcrypt = require("bcrypt");
 const jwt    = require("jsonwebtoken");
-const JWT_USER_PASSWORD = "aladld123" ;
+const { JWT_USER_PASSWORD } = require("../config");
 
 
 
