@@ -33,7 +33,10 @@ const courseSchema = new Schema({
     description : String ,
     price       : Number ,
     imageURL    : String ,
-    creatorID   : ObjectId 
+    creatorId   : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "adminModel"
+    }
 
 });
 

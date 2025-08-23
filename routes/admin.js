@@ -57,7 +57,7 @@ adminRouter.post("/signin" ,async function (req,res){
     const admin = await adminModel.findOne({
         email : email ,
         
-    })
+    });
         // compare plain password with hashed password in DB
     const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
@@ -103,49 +103,41 @@ adminRouter.post("/course" ,adminMiddleware,  async function (req,res){
 
     res.json({
         message : "Course created" ,
-        creatorId : course._id 
+        courseId : course._id 
     })
 })
 
 adminRouter.put("/course" ,adminMiddleware , async function (req,res){
+    const adminId = req.userId;  
+    const { courseId, title, description, imageURL, price } = req.body
 
-        await courseModel.updateOne({
-            _id : courseId ,   //even if one admin is trying to get access of other admin curse details so in order to prevent it add adminID in it 
-            creatorId : adminId ,
-
-        },{
-            title : title  , 
-            description : description ,
-            imageURL : imageURL ,
-            price : price
-        })
-
+    console.log("PUT /course body:", req.body);
+    const result = await courseModel.updateOne({ _id: courseId, creatorId: adminId }, { title, description, imageURL, price });
+    console.log("Update result:", result);
 
     res.json({
         message : "Course updated" ,
-        courseId : course._id 
+        courseId : courseId
+        // course: course // Remove this line if you don't need to return the course
     })
 });
 
 
-adminRouter.get("/course/bulk",adminMiddleware , async function(req,res){
+adminRouter.get("/course/bulk", adminMiddleware, async function(req, res) {
+    const adminId = req.userId;
+    console.log("adminId:", adminId);
 
-        const adminID = req.userId ;
-       const courses =  await courseModel.find({
-
-            creatorId : adminId 
-
-        });
-
+    const courses = await courseModel.find({ creatorId: adminId });
+    console.log("courses found:", courses);
 
     res.json({
-        message : "Course updated" ,
-        courses 
-    })
-
+        message: "Course fetched",
+        courses
+    });
 });
 
 
 module.exports = {
     adminRouter : adminRouter
 };
+
