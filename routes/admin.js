@@ -19,7 +19,7 @@ const userSchema = z.object({
 adminRouter.post("/signup" , async function (req,res){
 
     try {
-    const { email , password , firstName , lastName } = userSchema.parse(req.body); //todo : Add Zod validation
+    const { email , password , firstName ,  lastName } = userSchema.parse(req.body); //todo : Add Zod validation
 
     //todo : hash the password so plaintext pw is not stored in the db
     const hashedPassword = await bcrypt.hash(password,10);
